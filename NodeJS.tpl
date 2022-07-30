@@ -1,11 +1,18 @@
 server {
     listen      %ip%:%proxy_port%;
     server_name %domain_idn% %alias_idn%;
+
     error_log  /var/log/%web_system%/domains/%domain%.error.log error;
 
     location / {
+        #single node
+        #proxy_pass http://127.0.0.1:3000;
+
+        #unix socket mode
         proxy_pass      http://unix:%home%/%user%/web/%domain%/nodeapp/app.sock:$request_uri;
-        location ~* ^.+\.(%proxy_extentions%)$ {
+
+        
+        location ~* ^.+\.(%proxy_extensions%)$ {
             root           %docroot%;
             access_log     /var/log/%web_system%/domains/%domain%.log combined;
             access_log     /var/log/%web_system%/domains/%domain%.bytes bytes;
@@ -19,6 +26,10 @@ server {
     }
 
     location @fallback {
+        #single node
+        #proxy_pass     http://127.0.0.1:3000;
+
+        #unix socket mode
         proxy_pass      http://unix:%home%/%user%/web/%domain%/nodeapp/app.sock:/$1;
     }
 
