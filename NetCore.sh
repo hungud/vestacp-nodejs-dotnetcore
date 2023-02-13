@@ -7,7 +7,6 @@ home=$4
 docroot=$5
 
 #default script name
-mainScript="app.js"
 netCoreDir="$home/$user/web/$domain/netcoreapp"
 
 mkdir $netCoreDir
@@ -15,7 +14,7 @@ chown -R $user:$user $netCoreDir
 
 rm "$netCoreDir/app.sock"
 
-runuser -l $user -c "$envFile PORT=$netCoreDir/app.sock HOST=127.0.0.1 PWD=$netCoreDir NODE_ENV=production pm2 start $pmPath --name $scriptName $nodeInterpreter"
+runuser -l $user -c "dotnet run --urls=$netCoreDir/app.sock"
 
 if [ ! -f "$netCoreDir/app.sock" ]; then
     echo "Allow nginx access to the socket $netCoreDir/app.sock"
