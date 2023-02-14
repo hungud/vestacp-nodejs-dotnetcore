@@ -1,4 +1,5 @@
 #!/bin/bash
+#notepad++ => https://stackoverflow.com/a/24013333
 
 user=$1
 domain=$2
