@@ -1,5 +1,12 @@
 #!/bin/bash
+
+# fix for .sh to run on unix
 #notepad++ => https://stackoverflow.com/a/24013333
+#cd /usr/local/vesta/data/templates/web/nginx/
+#sed -i -e 's/\r$//' NetCore.sh
+
+#run debug: 
+#/usr/local/vesta/data/templates/web/nginx/NetCore.sh admin domain 127.0.0.1 /home
 
 user=$1
 domain=$2
@@ -14,7 +21,9 @@ chown -R $user:$user $netCoreDir
 
 rm "$netCoreDir/app.sock"
 
-runuser -l $user -c "dotnet run --urls=$netCoreDir/app.sock"
+#remove blank spaces
+pmPath=$(echo "$netCoreDir" | tr -d ' ')
+runuser -l $user -c "dotnet run $pmPath --urls=$netCoreDir/app.sock"
 
 if [ ! -f "$netCoreDir/app.sock" ]; then
     echo "Allow nginx access to the socket $netCoreDir/app.sock"
