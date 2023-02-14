@@ -6,7 +6,6 @@ ip=$3
 home=$4
 docroot=$5
 
-#default script name
 netCoreDir="$home/$user/web/$domain/netcoreapp"
 
 mkdir $netCoreDir
