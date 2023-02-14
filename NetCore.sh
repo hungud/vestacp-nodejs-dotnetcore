@@ -16,19 +16,35 @@ docroot=$5
 
 netCoreDir="$home/$user/web/$domain/netcoreapp"
 
+# create netcoreapp dir
 mkdir $netCoreDir
 chown -R $user:$user $netCoreDir
 
-rm "$netCoreDir/app.sock"
+# create netcoreapp service
 
-#remove blank spaces
-pmPath=$(echo "$netCoreDir" | tr -d ' ')
-runuser -l $user -c "dotnet run $pmPath --urls=$netCoreDir/app.sock"
+cat <<EOF > /etc/systemd/system/$domain.service
+[Unit]
+Description=$domain
 
-if [ ! -f "$netCoreDir/app.sock" ]; then
-    echo "Allow nginx access to the socket $netCoreDir/app.sock"
-    chmod 777 "$netCoreDir/app.sock"
-else
-    echo "Sock file not present disable NetCore app"
-    rm $netCoreDir/app.sock
-fi
+[Service]
+Type=notify
+WorkingDirectory=$netCoreDir
+ExecStart=/usr/bin/dotnet run
+SyslogIdentifier=$domain
+Restart=always
+RestartSec=5
+KillSignal=SIGINT
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+Environment=ASPNETCORE_URLS=$netCoreDir/app.sock
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable $domain.service
+systemctl start $domain.service
+
+# allow nginx access
+chown nginx:nginx $netCoreDir/app.sock
