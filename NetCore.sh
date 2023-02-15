@@ -21,6 +21,7 @@ mkdir $netCoreDir
 chown -R $user:$user $netCoreDir
 
 # create netcoreapp service
+# nano /etc/systemd/system/$domain.service
 
 cat <<EOF > /etc/systemd/system/$domain.service
 [Unit]
@@ -29,7 +30,7 @@ Description=$domain
 [Service]
 Type=notify
 WorkingDirectory=$netCoreDir
-ExecStart=/usr/bin/dotnet run
+ExecStart=/usr/bin/dotnet $netCoreDir/$domain.dll
 SyslogIdentifier=$domain
 Restart=always
 RestartSec=5
@@ -42,9 +43,9 @@ Environment=ASPNETCORE_URLS=$netCoreDir/app.sock
 WantedBy=multi-user.target
 EOF
 
-systemctl daemon-reload
-systemctl enable $domain.service
-systemctl start $domain.service
+# systemctl daemon-reload
+# systemctl enable $domain.service
+# systemctl start $domain.service
 
 # allow nginx access
-chown nginx:nginx $netCoreDir/app.sock
+# chown nginx:nginx $netCoreDir/app.sock
