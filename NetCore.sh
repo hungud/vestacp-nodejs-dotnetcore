@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-nginx?view=aspnetcore-7.0&tabs=linux-ubuntu
 # fix for .sh to run on unix
 #notepad++ => https://stackoverflow.com/a/24013333
 #cd /usr/local/vesta/data/templates/web/nginx/
